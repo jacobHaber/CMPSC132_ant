@@ -14,9 +14,13 @@ def gcd(m, n):
 
 class Fraction:
     def __init__(self, top, bottom):
-        cmmn = gcd(top, bottom)
-        self.num = top // cmmn 
-        self.den = bottom // cmmn
+        if isinstance(top,int) and isinstance(bottom,int):
+
+            cmmn = gcd(top, bottom)
+            self.num = top // cmmn 
+            self.den = bottom // cmmn
+        else:
+            raise Exception("integers Only!")    
         
     def __str__(self):
         return "{:d}/{:d}".format(self.num, self.den)
@@ -25,7 +29,7 @@ class Fraction:
         return self.num
     
     def get_den(self):
-        return self.num
+        return self.den
 
     def __eq__(self, other_fraction):
         first_num = self.num * other_fraction.den
@@ -78,13 +82,15 @@ class Fraction:
     def __lt__(self,other_fraction):
         first_num = self.num * other_fraction.den
         second_num = other_fraction.num * self.den
-        return first_num < second_num    
+        return first_num < second_num
+
+    def __radd__(s,of):
+        return s.__add__    
 
 
 x = Fraction(1, 2)
 x.show()
 y = Fraction(2, 3)
-print(y)
 assert y == Fraction(2,3) #not moving forward till passes test (eq check)
 print(x + y)
 assert x + y == Fraction(7,6)
