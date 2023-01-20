@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
-"""CMPSC132 - Homework 1.ipynb
+"""CMPSC132 - Homework 1.ipynb JACOB HABER
 I have included that code snippets for the <a href= 
 "https://runestone.academy/runestone/books/published/pythonds3/Introduction/
 ObjectOrientedProgramminginPythonDefiningClasses.html">PSADS book below</a>. You 
 need to extend the code in order to meet the criteria listed at the end of the 
 chapter.
 """
+
 
 def gcd(m, n):
     while m % n != 0:
@@ -14,79 +15,91 @@ def gcd(m, n):
 
 class Fraction:
     def __init__(self, top, bottom):
-        if isinstance(top,int) and isinstance(bottom,int):
+        if isinstance(top, int) and isinstance(bottom, int):
+          cmmn = gcd(top, bottom)        
+          self.num = top // cmmn
+          self.den = bottom // cmmn
+        else: 
+          raise Exception("Integers only!")
 
-            cmmn = gcd(top, bottom)
-            self.num = top // cmmn 
-            self.den = bottom // cmmn
-        else:
-            raise Exception("integers Only!")    
-        
     def __str__(self):
         return "{:d}/{:d}".format(self.num, self.den)
     
+    def __repr__(self):
+        return self.__str__()
+      
     def get_num(self):
         return self.num
-    
     def get_den(self):
         return self.den
-
+      
     def __eq__(self, other_fraction):
+        
         first_num = self.num * other_fraction.den
         second_num = other_fraction.num * self.den
-        return first_num == second_num
-    
-    def __add__(self, other_fraction):
-        if isinstance(other_fraction,int):
-            other_fraction = Fraction(other_fraction,1)
 
+        return first_num == second_num
+
+    def __add__(self, other_fraction):
+        if not isinstance(other_fraction, Fraction):
+          other_fraction = Fraction(other_fraction,1)
+        
+        # if isinstance(other_fraction, int):
+        #   other_fraction = Fraction(other_fraction,1)
+          
         new_num = self.num * other_fraction.den \
         + self.den * other_fraction.num
         new_den = self.den * other_fraction.den
         return Fraction(new_num, new_den)
 
-    def __sub__(self,other_fraction):
-        new_num = self.num* other_fraction.den / + self.den * other_fraction.num
-        new_den = self.den * other_fraction.num
-        return Fraction(new_num,new_den)
+    def __sub__(self, other_fraction):
+        new_num = self.num * other_fraction.den \
+        - self.den * other_fraction.num
+        new_den = self.den * other_fraction.den
+        return Fraction(new_num, new_den)    
+
     
-
-    def show(self):
-        print("{:d}/{:d}".format(self.num, self.den))
-
-    def __myl__(s, o):
+    def __mul__(s, o):
         """
-        s = a/b , o = c/d
+        s = a/b, o = c/d
         s*o = ac/db
         """
-        new_num = s.num * o.den
-        new_den = s.den * o.den 
-        
+        new_num = s.num *o.num        
+        new_den = s.den * o.den
         return Fraction(new_num, new_den)
-
+      
     def __truediv__(s, o):
         """
-        s = a/b , o = c/d
-        s*o = ac/db
+        s = a/b, o = c/d
+        s*o = ad/bc
         """
-        new_num = s.num * o.den
-        new_den = s.den * o.den 
-        
+        new_num = s.num *o.den        
+        new_den = s.den * o.num
         return Fraction(new_num, new_den)
-
-    def __ge__(self,other_fraction):
+    
+    def __gt__(self, other_fraction):
         first_num = self.num * other_fraction.den
         second_num = other_fraction.num * self.den
+
+        return first_num > second_num
+    
+    def __ge__(self, other_fraction):
+        first_num = self.num * other_fraction.den
+        second_num = other_fraction.num * self.den
+
         return first_num >= second_num
-
-    def __lt__(self,other_fraction):
+      
+    def __lt__(self, other_fraction):
         first_num = self.num * other_fraction.den
         second_num = other_fraction.num * self.den
+
         return first_num < second_num
-
+    
     def __radd__(s,of):
-        return s.__add__    
-
+        return s.__add__(of)
+      
+    def show(self):
+        print("{:d}/{:d}".format(self.num, self.den))
 
 x = Fraction(1, 2)
 x.show()
@@ -144,8 +157,9 @@ print(z)  #should be 1/2
 assert z == Fraction(1,2)
 # Test 3
 # __sub__
+print(x, y)
 z = x-y
-print(z)
+print(z, "this")
 assert z == Fraction(-1,6)
 # __mul__
 z = x*y
@@ -192,7 +206,8 @@ assert x ==  Fraction(7,2)
 """
 Research the __repr__ method. How does it differ from __str__? When is it used? 
 Implement __repr__.
-WRITE A STATEMENT HERE!
+WRITE A STATEMENT HERE! 
+The difference between __repr__ and __str__ is that repr is made to return a python expression for the object while str is made to return a human readable format. It can be used in order to reconstruct an object 
 """
 class LogicGate:
     def __init__(self, lbl):
