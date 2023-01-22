@@ -7,7 +7,6 @@ need to extend the code in order to meet the criteria listed at the end of the
 chapter.
 """
 
-
 def gcd(m, n):
     while m % n != 0:
         m, n = n, m % n
@@ -15,50 +14,46 @@ def gcd(m, n):
 
 class Fraction:
     def __init__(self, top, bottom):
-        if isinstance(top, int) and isinstance(bottom, int):
-          cmmn = gcd(top, bottom)        
-          self.num = top // cmmn
-          self.den = bottom // cmmn
-        else: 
-          raise Exception("Integers only!")
+        if isinstance(top,int) and isinstance(bottom,int):
 
+            cmmn = gcd(top, bottom)
+            self.num = top // cmmn 
+            self.den = bottom // cmmn
+        else:
+            raise Exception("integers Only!")    
+        
     def __str__(self):
         return "{:d}/{:d}".format(self.num, self.den)
     
-    def __repr__(self):
-        return self.__str__()
-      
     def get_num(self):
         return self.num
+    
     def get_den(self):
         return self.den
-      
+
     def __eq__(self, other_fraction):
-        
         first_num = self.num * other_fraction.den
         second_num = other_fraction.num * self.den
-
         return first_num == second_num
-
+    
     def __add__(self, other_fraction):
-        if not isinstance(other_fraction, Fraction):
-          other_fraction = Fraction(other_fraction,1)
-        
-        # if isinstance(other_fraction, int):
-        #   other_fraction = Fraction(other_fraction,1)
-          
+        if isinstance(other_fraction,int):
+            other_fraction = Fraction(other_fraction,1)
+
         new_num = self.num * other_fraction.den \
         + self.den * other_fraction.num
         new_den = self.den * other_fraction.den
         return Fraction(new_num, new_den)
 
-    def __sub__(self, other_fraction):
-        new_num = self.num * other_fraction.den \
-        - self.den * other_fraction.num
-        new_den = self.den * other_fraction.den
-        return Fraction(new_num, new_den)    
-
+    def __sub__(self,other_fraction):
+        new_num = self.num* other_fraction.den  + self.den * other_fraction.num
+        new_den = self.den * other_fraction.num
+        return Fraction(new_num,new_den)
     
+
+    def show(self):
+        print("{:d}/{:d}".format(self.num, self.den))
+
     def __mul__(s, o):
         """
         s = a/b, o = c/d
@@ -67,39 +62,30 @@ class Fraction:
         new_num = s.num *o.num        
         new_den = s.den * o.den
         return Fraction(new_num, new_den)
-      
+
     def __truediv__(s, o):
         """
-        s = a/b, o = c/d
-        s*o = ad/bc
+        s = a/b , o = c/d
+        s*o = ac/db
         """
-        new_num = s.num *o.den        
-        new_den = s.den * o.num
+        new_num = s.num * o.den
+        new_den = s.den * o.den 
+        
         return Fraction(new_num, new_den)
-    
-    def __gt__(self, other_fraction):
+
+    def __ge__(self,other_fraction):
         first_num = self.num * other_fraction.den
         second_num = other_fraction.num * self.den
-
-        return first_num > second_num
-    
-    def __ge__(self, other_fraction):
-        first_num = self.num * other_fraction.den
-        second_num = other_fraction.num * self.den
-
         return first_num >= second_num
-      
-    def __lt__(self, other_fraction):
+
+    def __lt__(self,other_fraction):
         first_num = self.num * other_fraction.den
         second_num = other_fraction.num * self.den
-
         return first_num < second_num
-    
+
     def __radd__(s,of):
-        return s.__add__(of)
-      
-    def show(self):
-        print("{:d}/{:d}".format(self.num, self.den))
+        return s.__add__    
+
 
 x = Fraction(1, 2)
 x.show()
@@ -206,8 +192,7 @@ assert x ==  Fraction(7,2)
 """
 Research the __repr__ method. How does it differ from __str__? When is it used? 
 Implement __repr__.
-WRITE A STATEMENT HERE! 
-The difference between __repr__ and __str__ is that repr is made to return a python expression for the object while str is made to return a human readable format. It can be used in order to reconstruct an object 
+WRITE A STATEMENT HERE!
 """
 class LogicGate:
     def __init__(self, lbl):
@@ -283,46 +268,6 @@ class NotGate(UnaryGate):
             return 0
         else:
             return 1
-class NandGate(BinaryGate):
-    def __init__(self, lbl):
-        BinaryGate.__init__(self, lbl)
-    def perform_gate_logic(self):
-        a = self.get_pin_a()
-        b = self.get_pin_b()
-        if a == 1 and b == 1:
-            return 1
-        else:
-            return 0
-class NorGate(BinaryGate):
-    def __init__(self, lbl):
-        BinaryGate.__init__(self, lbl)
-    def perform_gate_logic(self):
-        a = self.get_pin_a()
-        b = self.get_pin_b()
-        if a == 1 or b == 1:
-            return 0
-        else:
-            return 1
-class XorGate(BinaryGate):
-    def __init__(self, lbl):
-        BinaryGate().__init__(self,lbl)
-    def perform_gate_logic(self):
-        a = self.get_pin_a()
-        b = self.get_pin_b()
-        if a != b:
-            return 1
-        else:
-            return 0  
-class XnorGate(BinaryGate):
-    def __init__(self,lbl):
-        BinaryGate().__init(self,lbl)
-    def perform_gate_logic(self):
-        a = self.get_pin_a()
-        b = self.get_pin_b()
-        if a == b:
-            return 1
-        else:
-            return 0                                      
 class Connector:
     def __init__(self, fgate, tgate):
         self.from_gate = fgate
@@ -332,22 +277,14 @@ class Connector:
         return self.from_gate
     def get_to(self):
         return self.to_gate
-
-# g1 = AndGate("G1")
-# g2 = AndGate("G2")
-# g3 = OrGate("G3")
-# g4 = NotGate("G4")
-# g5 = NandGate("G5") # nand when both are false = true 
-# g6 = NorGate("G6") # 
-# g7 = XorGate("G7")
-# c1 = Connector(g1, g3)
-# c2 = Connector(g2, g3)
-# c3 = Connector(g3, g4)
-# print(g4.get_output())
-# print(g3.get_output())
-# print(g2.get_output())
-# print(g1.get_output())
-
+g1 = AndGate("G1")
+g2 = AndGate("G2")
+g3 = OrGate("G3")
+g4 = NotGate("G4")
+c1 = Connector(g1, g3)
+c2 = Connector(g2, g3)
+c3 = Connector(g3, g4)
+print(g4.get_output())
 """# LOGIC GATE PROBLEM
 Research other types of gates that exist (such as NAND, NOR, and XOR). Add them to 
 the circuit hierarchy. How much additional coding did you need to do?
@@ -355,11 +292,3 @@ The most simple arithmetic circuit is known as the half adder. Research the simp
 half-adder circuit. Implement this circuit.
 Bonus: 10 Points - Extend that circuit and implement an 8-bit full adder.
 """
-
-#Half adder circuit 
-addB = []
-for i in range(2):
-    addB.append(int(input("Enter a bit you want to add.")))
-sum = XorGate("Sum", addB) 
-carry = AndGate("Carry", addB)   
-print(f"Sum: {sum.get_output()}, Carry: {carry.get_output()}")
