@@ -26,7 +26,7 @@ class Fraction:
         return "{:d}/{:d}".format(self.num, self.den)
     
     def __repr__(self):
-        return self.__str__()
+        return f"Numerator: {self.num}, Denominator: {self.den}"
       
     def get_num(self):
         return self.num
@@ -207,32 +207,49 @@ assert x ==  Fraction(7,2)
 Research the __repr__ method. How does it differ from __str__? When is it used? 
 Implement __repr__.
 WRITE A STATEMENT HERE! 
-The difference between __repr__ and __str__ is that repr is made to return a python expression for the object while str is made to return a human readable format. It can be used in order to reconstruct an object 
 """
+print(repr(x))
+
 class LogicGate:
-    def __init__(self, lbl):
+
+    def __init__(self, lbl, pins):
         self.name = lbl
         self.output = None
+        self.pins = pins
+
     def get_label(self):
         return self.name
+
     def get_output(self):
         self.output = self.perform_gate_logic()
         return self.output
+    
+    def get_pins(self):
+        return self.pins
+
+    def get_pins(self):
+        return self.pins    
+
 class BinaryGate(LogicGate):
-    def __init__(self, lbl):
-        super(BinaryGate, self).__init__(lbl)
+
+    def __init__(self, lbl, pins):
+        super(BinaryGate, self).__init__(lbl, pins)
+
         self.pin_a = None
         self.pin_b = None
+
     def get_pin_a(self):
         if self.pin_a == None:
-            return int(input("Enter pin A input for gate " + self.get_label() + ": "))
+            return self.get_pins()[0]
         else:
             return self.pin_a.get_from().get_output()
+
     def get_pin_b(self):
         if self.pin_b == None:
-            return int(input("Enter pin B input for gate " + self.get_label() + ": "))
+            return self.get_pins()[1]
         else:
             return self.pin_b.get_from().get_output()
+
     def set_next_pin(self, source):
         if self.pin_a == None:
             self.pin_a = source
@@ -241,88 +258,117 @@ class BinaryGate(LogicGate):
                 self.pin_b = source
             else:
                 print("Cannot Connect: NO EMPTY PINS on this gate")
+
+
 class AndGate(BinaryGate):
-    def __init__(self, lbl):
-        BinaryGate.__init__(self, lbl)
+
+    def __init__(self, lbl, pins):
+        BinaryGate.__init__(self, lbl, pins)
+
     def perform_gate_logic(self):
+
         a = self.get_pin_a()
         b = self.get_pin_b()
         if a == 1 and b == 1:
             return 1
         else:
             return 0
+
 class OrGate(BinaryGate):
-    def __init__(self, lbl):
-        BinaryGate.__init__(self, lbl)
+    def __init__(self, lbl, pins):
+        BinaryGate.__init__(self, lbl, pins)
+
     def perform_gate_logic(self):
+
         a = self.get_pin_a()
         b = self.get_pin_b()
         if a == 1 or b == 1:
             return 1
         else:
             return 0
+
 class UnaryGate(LogicGate):
-    def __init__(self, lbl):
-        LogicGate.__init__(self, lbl)
+    def __init__(self, lbl, pins):
+        LogicGate.__init__(self, lbl, pins)
         self.pin = None
+
     def get_pin(self):
         if self.pin == None:
             return int(input("Enter pin input for gate " + self.get_label() + ": "))
         else:
             return self.pin.get_from().get_output()
+
     def set_next_pin(self, source):
         if self.pin == None:
             self.pin = source
         else:
             print("Cannot Connect: NO EMPTY PINS on this gate")
+
 class NotGate(UnaryGate):
-    def __init__(self, lbl):
-        UnaryGate.__init__(self, lbl)
+    def __init__(self, lbl,pins):
+        UnaryGate.__init__(self, lbl,pins)
     def perform_gate_logic(self):
         if self.get_pin():
             return 0
         else:
             return 1
+
 class NandGate(BinaryGate):
-    def __init__(self, lbl):
-        BinaryGate.__init__(self, lbl)
+
+    def __init__(self, lbl, pins):
+        BinaryGate.__init__(self, lbl, pins)
+    
     def perform_gate_logic(self):
+
         a = self.get_pin_a()
         b = self.get_pin_b()
         if a == 1 and b == 1:
-            return 1
-        else:
             return 0
+        else:
+            return 1
+
 class NorGate(BinaryGate):
-    def __init__(self, lbl):
-        BinaryGate.__init__(self, lbl)
+
+    def __init__(self, lbl, pins):
+        BinaryGate.__init__(self, lbl, pins)
+    
     def perform_gate_logic(self):
+
         a = self.get_pin_a()
         b = self.get_pin_b()
         if a == 1 or b == 1:
             return 0
         else:
             return 1
+
 class XorGate(BinaryGate):
-    def __init__(self, lbl):
-        BinaryGate().__init__(self,lbl)
+
+    def __init__(self, lbl, pins):
+        BinaryGate.__init__(self, lbl, pins)
+    
     def perform_gate_logic(self):
+
         a = self.get_pin_a()
         b = self.get_pin_b()
         if a != b:
             return 1
         else:
-            return 0  
-class XnorGate(BinaryGate):
-    def __init__(self,lbl):
-        BinaryGate().__init(self,lbl)
+            return 0
+
+class XNorGate(BinaryGate):
+
+    def __init__(self, lbl, pins):
+        BinaryGate.__init__(self, lbl, pins)
+    
     def perform_gate_logic(self):
+
         a = self.get_pin_a()
         b = self.get_pin_b()
         if a == b:
             return 1
         else:
-            return 0                                      
+            return 0
+   
 class Connector:
     def __init__(self, fgate, tgate):
         self.from_gate = fgate
@@ -355,11 +401,10 @@ The most simple arithmetic circuit is known as the half adder. Research the simp
 half-adder circuit. Implement this circuit.
 Bonus: 10 Points - Extend that circuit and implement an 8-bit full adder.
 """
-
-#Half adder circuit 
-addB = []
-for i in range(2):
-    addB.append(int(input("Enter a bit you want to add.")))
-sum = XorGate("Sum", addB) 
-carry = AndGate("Carry", addB)   
+#Half adder circuit asked shin for help since i was confused for 2 hours 
+addends = []
+for x in range(2):
+    addends.append(int(input("Enter two bits that you wish to add: ")))
+sum = XorGate("Sum", addends)
+carry = AndGate("Carry", addends)
 print(f"Sum: {sum.get_output()}, Carry: {carry.get_output()}")
